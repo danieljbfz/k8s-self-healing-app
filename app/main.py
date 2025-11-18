@@ -171,9 +171,9 @@ def crash():
     """
     A deliberate fault-injection endpoint (`/crash`).
 
-    **CRITICAL NOTE:** This endpoint is solely for **TESTING** the self-healing 
-    capabilities of the orchestration environment (e.g., Kubernetes). It must 
-    **NEVER** be included in production code.
+    NOTE: This endpoint is solely for **TESTING** the self-healing capabilities 
+    of the orchestration environment (e.g., Kubernetes). It must **NEVER** be 
+    included in production code.
 
     When executed, the following steps occur:
     1. A Flask response object is created using `jsonify()`, but not yet sent 
@@ -205,10 +205,11 @@ def crash():
     # cleanup routines (e.g., `finally` blocks, `atexit` handlers, I/O buffer flushing). 
     # This makes it a much better choice than `sys.exit(1)` or `exit(1)` for simulating a true, 
     # immediate, unrecoverable crash (like a segmentation fault or an out-of-memory error).
+    os._exit(1) 
+
     # NOTE: We deliberately AVOID the `@after_this_request` decorator, which would
     # schedule the exit *after* the response is sent. That would simulate a graceful
     # shutdown, not a hard crash.
-    os._exit(1) 
     
     # This return statement is UNREACHABLE due to os._exit(1) above.
     return response
@@ -218,13 +219,13 @@ def crash():
 def metrics():
     """
     A basic observability endpoint (`/metrics`).
-    
-    In production environments, this endpoint is often exposed on a separate 
-    port (e.g., 8080) to isolate it from regular user traffic, and is used by a 
-    monitoring system like **Prometheus** to scrape metrics from the application. 
-    For example, Prometheus could be configured to scrape this endpoint every 
-    5 minutes and store the metrics in a database. These metrics can then be 
-    used for various purposes, including:
+
+    In production, this endpoint is often exposed on a separate port (e.g., 8080) 
+    to keep it isolated from regular user traffic. A monitoring system, such as 
+    **Prometheus**, then connects to this port at scheduled intervals (e.g., every 
+    5 minutes) to scrape, or collect, metrics from the application. After the 
+    metrics are collected, they are typically stored in a dedicated time-series 
+    database and later used for a wide variety of tasks, including:
     * **Monitoring & Dashboards:** Tracking Key Performance Indicators (KPIs)
       such as request rates, response times, and cache hit ratios.
     * **Alerting:** Automatically notifying engineers when metrics (e.g., high
@@ -320,7 +321,7 @@ if __name__ == '__main__':
         # runtime and Kubernetes networking layer to access it.        
         host='0.0.0.0',
         port=port,
-        # Debug mode is only enabled in development to prevent exposing sensitive 
-        # stack traces in production.
+        # Debug mode must be disabled in production to avoid exposing sensitive 
+        # system information (stack traces) to unauthorized users.
         debug=(APP_ENV == 'development')
     )

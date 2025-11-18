@@ -139,4 +139,12 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 # 🚀 THE STARTUP COMMAND
 # ============================================================================
 
+# Finally, we define how to start our application using the `gunicorn` WSGI server.
+# When the container boots, we do not want the toy, single-threaded Flask development 
+# server. We want a real WSGI server that can handle concurrent requests and restart
+# workers when they die. Gunicorn is battle-tested and tiny, so we launch two
+# workers bound to all interfaces on port 5000. We also send both access and
+# error logs to stdout/stderr so that Docker can scoop them up and ship them
+# wherever the cluster wants the logs to go. The "main:app" part at the end just 
+# tells Gunicorn to "import the variable named app from the module main.py".
 CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:5000", "--access-logfile", "-", "--error-logfile", "-", "main:app"]
