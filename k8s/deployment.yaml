@@ -79,14 +79,14 @@ spec:
 
   # The selector works very much like an address book, defining which Pods 
   # belong to this Deployment and, by extension, which Pods the controller 
-  # should count, replace, or update. The rule is simple. Every Pod that
-  # carries the labels listed here is considered part of the set, and any Pod 
-  # that does not is ignored. The labels in the selector must be an exact match 
-  # with the labels we put in the Pod template (see below), or the controller 
-  # will refuse to create the Deployment. This loose coupling, matching by 
-  # labels rather than by name, lets us do powerful things later, such as 
-  # splitting traffic between two Deployments (blue/green or canary releases) 
-  # merely by adjusting the selectors on a Service.
+  # should count, replace, or update. The idea is actually quite simple. Every 
+  # Pod that carries the labels listed here is treated as part of the group, 
+  # and any Pod that does not is simply ignored. The labels in the selector 
+  # must be an exact match with the labels we put in the Pod template (see 
+  # below), or the controller will refuse to create the Deployment. This loose 
+  # coupling, matching by labels rather than by name, lets us do powerful 
+  # things later, such as splitting traffic between two Deployments (blue/green 
+  # or canary releases) merely by adjusting the selectors on a Service.
   selector:
     matchLabels:
       app: webapp
