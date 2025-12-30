@@ -27,7 +27,19 @@ kind: Service
 # 🏷️ METADATA
 # ============================================================================
 
-
+# The `metadata` section defines the identity of the Service within the 
+# cluster. Just like in the Deployment, the `name` field is used for 
+# administrative tasks through `kubectl` (e.g., get, describe, delete). 
+# However, for a Service, it is also used to generate an internal DNS entry,
+# allowing other applications in the cluster to reach it using a hostname like
+# `http://webapp-service` instead of an IP address. When it comes to the 
+# `labels` field, there really is no difference in functionality compared to 
+# other Kubernetes objects. These are simply key-value pairs that help us 
+# organize, search, and manage related objects in the cluster. They do not 
+# influence how the Service routes traffic (that is handled by the `selector`), 
+# but they are useful for grouping and filtering resources. For example, we
+# might add labels like `env: prod` or `team: engineering` to help us find all
+# resources associated with a specific environment or team.
 metadata:
   name: webapp-service
   labels:
